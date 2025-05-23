@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#141301" stroke="#D72638" stroke-width="2"/>
+  
+  <!-- Letter M -->
+  <text x="50" y="65" font-family="Montserrat, sans-serif" font-weight="bold" font-size="50" text-anchor="middle" fill="#D72638">M</text>
+  
+  <!-- Target circles -->
+  <circle cx="50" cy="30" r="5" fill="none" stroke="#D72638" stroke-width="1.5"/>
+  <circle cx="50" cy="30" r="10" fill="none" stroke="#D72638" stroke-width="1"/>
+  <circle cx="50" cy="30" r="2" fill="#D72638"/>
+</svg>
