@@ -1,6 +1,7 @@
 <script>
 	// Import dependencies
 	import { onMount } from 'svelte';
+	import { isR2Url, getFilenameFromR2Url } from '$lib/utils/r2/adminHelpers';
 	
 	// SvelteKit data props (from +page.server.js)
 	/** @type {import('./$types').PageData} */
@@ -20,9 +21,12 @@
 	let newImageUrl = '';
 	let newImageAlt = '';
 	let newImageCaption = '';
+	
+	// Upload and storage status
 	let uploadedImage = null;
 	let uploadProgress = 0;
 	let isUploading = false;
+	let storageType = ''; // Will be 'R2' or 'local'
 	
 	onMount(() => {
 		// Check if there's a stored authentication token in sessionStorage
@@ -146,6 +150,7 @@
 			if (result.success) {
 				// Set the URL in the form
 				newImageUrl = result.url;
+				storageType = result.storageType || 'local';
 				uploadProgress = 100;
 				setTimeout(() => {
 					uploadProgress = 0;
@@ -304,6 +309,21 @@
 					<h2 class="text-2xl font-bold mb-4">Gallery Management</h2>
 					<p class="text-gray-600 mb-6">Add, remove, or reorder images displayed in the gallery carousel.</p>
 					
+					<div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+						<div class="flex items-center">
+							<div class="flex-shrink-0">
+								<svg class="h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+								</svg>
+							</div>
+							<div class="ml-3">
+								<p class="text-sm text-blue-700">
+									Images are now stored in Cloudflare R2 for better performance and reliability.
+								</p>
+							</div>
+						</div>
+					</div>
+					
 					<!-- Add New Image Form -->
 					<div class="bg-tertiary/20 p-6 rounded-lg mb-8">
 						<h3 class="text-xl font-bold mb-4">Add New Image</h3>
@@ -316,7 +336,7 @@
 						
 						<!-- Image Upload -->
 						<div class="mb-6 p-4 border border-dashed border-gray-300 rounded-lg">
-							<h4 class="font-semibold mb-2">Upload Image</h4>
+							<h4 class="font-semibold mb-2">Upload Image <span class="text-primary text-sm">(Cloudflare R2 Storage)</span></h4>
 							
 							<div class="flex flex-col sm:flex-row gap-4 items-start mb-4">
 								<div class="flex-1">
@@ -365,13 +385,30 @@
 								class="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
 								on:click={uploadImage}
 								disabled={!uploadedImage || isUploading}
-						>
+							>
 								{#if isUploading}
 									Uploading...
 								{:else}
 									Upload Image
 								{/if}
 							</button>
+							
+							{#if uploadedImage && newImageUrl}
+								<div class="mt-2 bg-green-50 border border-green-200 rounded p-3">
+									<div class="flex items-center gap-2 text-green-700">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+											<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+										</svg>
+										<span class="text-sm">Upload successful!</span>
+										{#if storageType === 'R2'}
+											<span class="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">Cloudflare R2</span>
+										{:else}
+											<span class="text-xs bg-gray-100 text-gray-800 px-1 py-0.5 rounded">Local Storage</span>
+										{/if}
+									</div>
+									<p class="text-xs text-gray-600 mt-1 break-all">{newImageUrl}</p>
+								</div>
+							{/if}
 						</div>
 						
 						<form on:submit|preventDefault={addImage} class="space-y-4">
@@ -434,7 +471,7 @@
 						{#if galleryImages.length === 0}
 							<p class="text-gray-600 italic">No images in gallery. Add your first image above.</p>
 						{:else}
-							<div class="overflow-x-auto">
+							<div class="overflow-x-auto w-full">
 								<table class="min-w-full bg-white border border-gray-200">
 									<thead>
 										<tr>
@@ -449,27 +486,34 @@
 											<tr class="{index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}">
 												<td class="p-3 border-b border-gray-200">{index + 1}</td>
 												<td class="p-3 border-b border-gray-200">
-												<div class="w-24 h-16 bg-gray-200 relative overflow-hidden rounded">
-												{#if image.src.startsWith('/images/')}
-												<!-- Actual image preview -->
-												<img 
-												 src={image.src} 
-												  alt={image.alt} 
-												   class="w-full h-full object-cover"
-												   />
-										{:else}
-											<!-- Placeholder icon -->
-											<div class="absolute inset-0 flex items-center justify-center bg-primary/10 text-primary">
-												<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-												</svg>
-											</div>
-										{/if}
-									</div>
-								</td>
+													<div class="w-24 h-16 bg-gray-200 relative overflow-hidden rounded">
+														{#if image.src.startsWith('/images/') || isR2Url(image.src)}
+															<!-- Actual image preview -->
+															<img 
+																src={image.src} 
+																alt={image.alt} 
+																class="w-full h-full object-cover"
+															/>
+														{:else}
+															<!-- Placeholder icon -->
+															<div class="absolute inset-0 flex items-center justify-center bg-primary/10 text-primary">
+																<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+																</svg>
+															</div>
+														{/if}
+													</div>
+												</td>
 												<td class="p-3 border-b border-gray-200">
 													<div class="space-y-1">
-														<div class="font-medium truncate max-w-xs">{image.src}</div>
+														<div class="font-medium truncate max-w-xs">
+															{#if isR2Url(image.src)}
+																<span class="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">R2</span>
+																{getFilenameFromR2Url(image.src)}
+															{:else}
+																{image.src}
+															{/if}
+														</div>
 														<div class="text-sm text-gray-600 truncate max-w-xs">Alt: {image.alt}</div>
 														<div class="text-sm text-gray-600 truncate max-w-xs">Caption: {image.caption}</div>
 													</div>

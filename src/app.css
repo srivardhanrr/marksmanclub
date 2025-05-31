@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-secondary text-dark;
+    @apply bg-secondary text-dark overflow-x-hidden max-w-full;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -39,6 +39,6 @@
   }
 
   .container {
-    @apply px-4 mx-auto max-w-7xl w-full;
+    @apply px-4 mx-auto max-w-7xl w-full overflow-x-hidden;
   }
 }

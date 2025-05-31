@@ -31,7 +31,7 @@
 	}
 </script>
 
-<header class="bg-dark text-white shadow-lg z-50 sticky top-0">
+<header class="bg-dark text-white shadow-lg z-50 sticky top-0 w-full overflow-hidden">
 	<div class="bg-primary py-1 px-4">
 		<div class="container mx-auto flex justify-between items-center text-sm">
 			<div class="flex items-center gap-6">
@@ -83,7 +83,7 @@
 					</li>
 				{/each}
 				<li>
-					<a href="#contact" class="btn-primary">
+					<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary">
 						Book Now
 					</a>
 				</li>
@@ -121,7 +121,7 @@
 						</li>
 					{/each}
 					<li>
-						<a href="#contact" class="btn-primary inline-block" on:click={toggleMobileMenu}>
+						<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary inline-block" on:click={toggleMobileMenu}>
 							Book Now
 						</a>
 					</li>
@@ -131,11 +131,11 @@
 	</div>
 </header>
 
-<main>
+<main class="overflow-x-hidden w-full">
 	{@render children()}
 </main>
 
-<footer class="bg-dark text-white py-12">
+<footer class="bg-dark text-white py-12 w-full overflow-hidden">
 	<div class="container">
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 			<!-- Company Info -->

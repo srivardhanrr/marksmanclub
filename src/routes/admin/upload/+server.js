@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { join } from 'path';
-import { jsonStorage } from '$lib/utils/jsonStorage';
+import { uploadToR2 } from '$lib/utils/r2/r2Client';
+import { uploadToLocalStorage } from '$lib/utils/r2/localFallback';
+import { isR2Configured } from '$lib/config/environment';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
@@ -24,41 +24,29 @@ export async function POST({ request }) {
     const imageData = matches[2];
     const buffer = Buffer.from(imageData, 'base64');
 
-    // Ensure directory exists
-    const uploadDir = join(process.cwd(), 'static', 'images', 'gallery');
-    if (!existsSync(uploadDir)) {
-      mkdirSync(uploadDir, { recursive: true });
+    let publicUrl;
+    let storageType;
+
+    // Check if R2 is configured, otherwise use local storage
+    if (isR2Configured()) {
+      // Upload to Cloudflare R2
+      const key = `gallery/${data.filename}`;
+      publicUrl = await uploadToR2(key, buffer, imageType);
+      storageType = 'R2';
+    } else {
+      // Fallback to local storage
+      publicUrl = await uploadToLocalStorage(data.filename, buffer, imageType);
+      storageType = 'local';
     }
     
-    // Save the file
-    const filePath = join(uploadDir, data.filename);
-    writeFileSync(filePath, buffer);
-    
-    // Return the URL to the new file
-    const fileUrl = `/images/gallery/${data.filename}`;
-    
-    // Log the upload in a text file for debugging
-    try {
-      const logDir = join(process.cwd(), 'data', 'logs');
-      if (!existsSync(logDir)) {
-        mkdirSync(logDir, { recursive: true });
-      }
-      
-      const logEntry = `${new Date().toISOString()} - Uploaded: ${data.filename} to ${filePath}\n`;
-      const logPath = join(logDir, 'uploads.log');
-      
-      // Append to log file or create it if it doesn't exist
-      const fs = await import('fs/promises');
-      await fs.appendFile(logPath, logEntry);
-    } catch (logError) {
-      console.error('Error writing to upload log:', logError);
-      // Non-critical error, continue with the upload response
-    }
+    // Log the upload
+    console.log(`${new Date().toISOString()} - Uploaded: ${data.filename} to ${storageType}`);
     
     return json({ 
       success: true, 
-      url: fileUrl,
-      message: 'File uploaded successfully' 
+      url: publicUrl,
+      storageType,
+      message: `File uploaded successfully to ${storageType} storage` 
     });
   } catch (error) {
     console.error('Upload error:', error);

@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { isR2Url } from '$lib/utils/r2/adminHelpers';
 	
 	// Access the data loaded from the server
 	/** @type {import('./$types').PageData} */
@@ -7,6 +8,24 @@
 	
 	// Gallery carousel
 	let carouselImages = data.galleryImages || [];
+	
+	// Handle image loading errors
+	function handleImageError(image) {
+		// Update the image source to use the placeholder
+		// We create a new array with the updated image to trigger reactivity
+		carouselImages = carouselImages.map(img => {
+			if (img === image) {
+				// Save the original source in case we need it later
+				const originalSrc = img.src;
+				return {
+					...img,
+					_originalSrc: originalSrc, // Store original for reference
+					src: '/images/placeholder.svg'
+				};
+			}
+			return img;
+		});
+	}
 	
 	// Load images from the server or fallback to localStorage
 	onMount(() => {
@@ -57,24 +76,24 @@
 	// Services section data
 	const facilities = [
 		{
-			title: 'Professional Training',
-			description: 'Expert coaching from experienced trainers for shooters of all skill levels.',
+			title: '10-Meter Indoor Shooting Range',
+			description: 'Fully equipped and climate-controlled range for air rifle and pistol shooting.',
+			icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
+		},
+		{
+			title: 'Professional Coaching',
+			description: 'Expert trainers providing guidance for beginners to advanced level, including Olympic-style shooting.',
 			icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
 		},
 		{
-			title: 'Competition Training',
-			description: 'Specialized training for District, State & National level competitions.',
+			title: 'Top-Quality Equipment',
+			description: 'Access to well-maintained air rifles, pistols, and safety gear for practice and training.',
 			icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z'
 		},
 		{
-			title: 'Modern Ranges',
-			description: 'State-of-the-art shooting ranges with professional equipment.',
-			icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
-		},
-		{
-			title: 'Mental Training',
-			description: 'Comprehensive mental discipline and focus training for precision shooting.',
-			icon: 'M13 10V3L4 14h7v7l9-11h-7z'
+			title: 'Supportive Learning Environment',
+			description: 'Friendly and encouraging atmosphere ideal for skill development and competitive preparation.',
+			icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
 		}
 	];
 
@@ -182,7 +201,7 @@
 </div>
 
 <!-- Hero Section -->
-<section class="relative bg-dark text-white min-h-[90vh] flex items-center">
+<section class="relative bg-dark text-white min-h-[90vh] flex items-center overflow-hidden">
 	<!-- Hero Background -->
 	<div class="absolute inset-0 overflow-hidden">
 		<!-- Target pattern background -->
@@ -203,7 +222,7 @@
 			</h1>
 			<p class="text-lg md:text-xl text-tertiary mb-8">Discover the rewarding world of target shooting with us. Experience the thrill of hitting your target and the satisfaction of developing your marksmanship skills.</p>
 			<div class="flex flex-wrap gap-4">
-				<a href="#contact" class="btn-primary">
+				<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary">
 					Start Now
 				</a>
 				<a href="tel:+917877393777" class="btn-outline">
@@ -346,7 +365,7 @@
 	<div class="container">
 		<div class="text-center mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold mb-4">Our <span class="text-primary">Facilities</span></h2>
-			<p class="text-lg text-gray-600 max-w-3xl mx-auto">Comprehensive training and world-class shooting ranges.</p>
+			<p class="text-lg text-gray-600 max-w-3xl mx-auto">World-class shooting ranges with professional training and equipment.</p>
 		</div>
 		
 		<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -364,7 +383,7 @@
 		</div>
 		
 		<div class="mt-12 text-center">
-			<a href="#contact" class="btn-primary">
+			<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary">
 				Book your Range Today
 			</a>
 		</div>
@@ -381,29 +400,20 @@
 		
 		{#if carouselImages.length > 0}
 		<!-- Carousel Component -->
-		<div class="relative max-w-4xl mx-auto mb-16 overflow-hidden rounded-lg shadow-lg bg-white">
+		<div class="relative max-w-4xl mx-auto mb-16 overflow-hidden rounded-lg shadow-lg bg-white w-full">
 			<!-- Main carousel image -->
 			<div class="relative w-full h-[500px] overflow-hidden">
 				{#each carouselImages as image, index}
 					<!-- Only show current image -->
 					<div class="absolute inset-0 transition-opacity duration-500 ease-in-out"
 					style="opacity: {index === currentImageIndex ? '1' : '0'}">
-					{#if image.src.startsWith('/images/')}
-					 <!-- Actual image when available -->
+					<!-- Image display with support for both local and R2 images -->
 					<img 
-					src={image.src} 
-					alt={image.alt} 
-					 class="w-full h-full object-cover"
-					 />
-					{:else}
-					 <!-- Placeholder with icon -->
-							<div class="w-full h-full bg-primary/10 flex items-center justify-center">
-								<svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-								</svg>
-							</div>
-						{/if}
+						src={image.src} 
+						alt={image.alt} 
+						class="w-full h-full object-cover"
+						on:error={() => handleImageError(image)}
+					/>
 						
 						<!-- Caption overlay -->
 						<div class="absolute bottom-0 left-0 right-0 bg-dark/70 text-white p-4">
@@ -470,22 +480,13 @@
 					class="overflow-hidden rounded-lg bg-white h-24 relative border-2 {index === currentImageIndex ? 'border-primary' : 'border-transparent'} transition-colors duration-200"
 					on:click={() => currentImageIndex = index}
 				>
-					{#if image.src.startsWith('/images/')}
-						<!-- Actual image when available -->
-						<img 
-							src={image.src} 
-							alt={image.alt} 
-							class="w-full h-full object-cover"
-						/>
-					{:else}
-						<!-- Placeholder with icon -->
-						<div class="absolute inset-0 bg-primary/10 flex items-center justify-center">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-							</svg>
-						</div>
-					{/if}
+					<!-- Image thumbnail with fallback -->
+					<img 
+						src={image.src} 
+						alt={image.alt} 
+						class="w-full h-full object-cover"
+						on:error={() => handleImageError(image)}
+					/>
 				</button>
 			{/each}
 		</div>
@@ -542,7 +543,7 @@
 							{/each}
 						</div>
 						
-						<a href="#contact" class="inline-flex items-center text-primary hover:text-white transition-colors duration-200">
+						<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary hover:text-white transition-colors duration-200">
 							<span>Train with us</span>
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -555,7 +556,7 @@
 			<div class="md:col-span-2 mt-8 py-8 px-6 bg-primary/20 rounded-lg text-center">
 				<h3 class="text-2xl font-bold mb-4">You Could Be <span class="text-primary">Next</span></h3>
 				<p class="text-lg mb-6 max-w-2xl mx-auto">Join our academy and train to become our next champion shooter! Our expert coaches are ready to help you achieve excellence.</p>
-				<a href="#contact" class="btn-primary">
+				<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary">
 					Start Your Journey
 				</a>
 			</div>
@@ -601,7 +602,7 @@
 		
 		<div class="mt-12 text-center">
 			<p class="text-lg mb-6 max-w-3xl mx-auto">Join Marksman Shooting Club and become part of our ever-growing list of champions!</p>
-			<a href="#contact" class="btn-primary">
+			<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary">
 				Start Your Journey to Success
 			</a>
 		</div>
@@ -609,16 +610,16 @@
 </section>
 
 <!-- Contact Section -->
-<section id="contact" class="section bg-secondary">
+<section id="contact" class="section bg-secondary overflow-hidden">
 	<div class="container">
 		<div class="text-center mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold mb-4">Contact <span class="text-primary">Us</span></h2>
 			<p class="text-lg text-gray-600 max-w-3xl mx-auto">Book your Range Today and begin your shooting journey.</p>
 		</div>
 		
-		<div class="grid md:grid-cols-2 gap-12">
+		<div class="grid md:grid-cols-2 gap-6 md:gap-12 max-w-full overflow-hidden">
 			<div>
-				<form class="space-y-6">
+				<form class="space-y-6 w-full max-w-full overflow-hidden">
 					<div>
 						<label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
 						<input 
@@ -626,7 +627,7 @@
 							id="name" 
 							name="name" 
 							placeholder="Your full name" 
-							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-full"
 							required
 						/>
 					</div>
@@ -637,7 +638,7 @@
 							id="email" 
 							name="email" 
 							placeholder="Your email address" 
-							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-full"
 							required
 						/>
 					</div>
@@ -648,7 +649,7 @@
 							id="phone" 
 							name="phone" 
 							placeholder="Your phone number" 
-							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-full"
 							required
 						/>
 					</div>
@@ -659,7 +660,7 @@
 							name="message" 
 							rows="4" 
 							placeholder="Your message" 
-							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+							class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent max-w-full"
 							required
 						></textarea>
 					</div>
@@ -672,15 +673,15 @@
 			</div>
 			
 			<div>
-				<div class="bg-white p-6 rounded-lg shadow-md mb-8">
+				<div class="bg-white p-6 rounded-lg shadow-md mb-8 overflow-hidden">
 					<h3 class="text-xl font-bold mb-4">Visit Us</h3>
-					<address class="not-italic text-gray-600 space-y-3 mb-6">
+					<address class="not-italic text-gray-600 space-y-3 mb-6 break-words">
 						<p class="flex items-start gap-3">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-primary flex-shrink-0">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
 							</svg>
-							<span>
+							<span class="flex-1 min-w-0">
 								4th Floor, Mukund Tower, Near Indian Bank<br>
 								Churu Road, Jhunjunu, Rajasthan, 333001
 							</span>
@@ -695,7 +696,9 @@
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-primary flex-shrink-0">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
 							</svg>
-							<span>shooterdeep777@gmail.com</span>
+							<span class="flex-1 min-w-0 break-all">
+								shooterdeep777@gmail.com
+							</span>
 						</p>
 					</address>
 					
@@ -712,14 +715,14 @@
 					</div>
 				</div>
 				
-				<div class="bg-dark text-white p-6 rounded-lg">
+				<div class="bg-dark text-white p-6 rounded-lg overflow-hidden">
 					<h3 class="text-xl font-bold mb-4 text-primary">Subscribe for updates</h3>
 					<p class="text-tertiary mb-4">Stay updated with our latest news, events, and offers.</p>
-					<form class="flex gap-2">
+					<form class="flex flex-col sm:flex-row gap-2">
 						<input 
 							type="email" 
 							placeholder="Your email address" 
-							class="flex-1 px-4 py-3 rounded-md border border-gray-700 bg-accent/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white"
+							class="flex-1 px-4 py-3 rounded-md border border-gray-700 bg-accent/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-white max-w-full"
 							required
 						/>
 						<button type="submit" class="btn-primary whitespace-nowrap">
