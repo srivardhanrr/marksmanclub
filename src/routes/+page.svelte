@@ -1,46 +1,46 @@
 <script>
 	import { onMount } from 'svelte';
-	import { isR2Url } from '$lib/utils/r2/adminHelpers';
 	
-	// Access the data loaded from the server
-	/** @type {import('./$types').PageData} */
-	export let data;
+	// Gallery images - static array
+	const galleryImages = [
+		{
+			src: '/images/home-image.jpg',
+			alt: 'Indoor Shooting Range',
+			caption: 'Our state-of-the-art 10-meter indoor shooting range'
+		},
+		{
+			src: '/images/gallery/range1.png',
+			alt: 'Indoor Shooting Range',
+			caption: 'Our state-of-the-art 10-meter indoor shooting range'
+		},
+		{
+			src: '/images/gallery/range2.png',
+			alt: 'Indoor Shooting Range',
+			caption: '1st Rajasthan Pre State Shooting Competition 2025'
+		},
+		{
+			src: '/images/gallery/range3.png',
+			alt: 'Indoor Shooting Range',
+			caption: '1st Rajasthan Pre State Shooting Competition 2025'
+		},
+		{
+			src: '/images/gallery/range4.png',
+			alt: 'Indoor Shooting Range',
+			caption: '1st Rajasthan Pre State Shooting Competition 2025'
+		},
+	];
 	
-	// Gallery carousel
-	let carouselImages = data.galleryImages || [];
-	
-	// Handle image loading errors
-	function handleImageError(image) {
-		// Update the image source to use the placeholder
-		// We create a new array with the updated image to trigger reactivity
-		carouselImages = carouselImages.map(img => {
-			if (img === image) {
-				// Save the original source in case we need it later
-				const originalSrc = img.src;
-				return {
-					...img,
-					_originalSrc: originalSrc, // Store original for reference
-					src: '/images/placeholder.svg'
-				};
-			}
-			return img;
-		});
-	}
-	
-	// Load images from the server or fallback to localStorage
+	// Initialize carousel autoplay
 	onMount(() => {
-		// Only start autoplay if there are images
-		if (carouselImages.length > 0) {
-			// Start autoplay
-			autoplayInterval = setInterval(() => {
-				nextImage();
-			}, 3000); // Change image every 3 seconds
-			
-			// Clean up interval when component unmounts
-			return () => {
-				clearInterval(autoplayInterval);
-			};
-		}
+		// Start autoplay
+		autoplayInterval = setInterval(() => {
+			nextImage();
+		}, 3000); // Change image every 3 seconds
+		
+		// Clean up interval when component unmounts
+		return () => {
+			clearInterval(autoplayInterval);
+		};
 	});
 	
 	let currentImageIndex = 0;
@@ -48,18 +48,14 @@
 	let isPlaying = true;
 	
 	function nextImage() {
-		if (carouselImages.length === 0) return;
-		currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
+		currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
 	}
 	
 	function prevImage() {
-		if (carouselImages.length === 0) return;
-		currentImageIndex = (currentImageIndex - 1 + carouselImages.length) % carouselImages.length;
+		currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
 	}
 	
 	function togglePlayPause() {
-		if (carouselImages.length === 0) return;
-		
 		isPlaying = !isPlaying;
 		
 		if (isPlaying) {
@@ -100,28 +96,34 @@
 	// Locations/Centers section data
 	const locations = [
 		{
-			name: 'Jhunjunu Center',
+			name: 'JHUNJHUNU CLUB',
 			address: '4th Floor, Mukund Tower, Near Indian Bank',
-			area: 'Churu Road, Jhunjunu',
+			area: 'Churu Road, Jhunjhunu',
 			state: 'Rajasthan, 333001',
 			phone: '+91 7877 393 777',
-			features: ['10m Air Rifle Range', 'Professional Training', 'Competition Practice']
+			features: ['10m Air Rifle Range', 'Professional Training', 'Competition Practice',
+				'Junior Training Programs', 'Beginner Courses', 'Weekend Classes',
+				'Advanced Training', 'Elite Shooter Programs', 'Competition Preparation']
 		},
 		{
-			name: 'Bagar Center',
+			name: 'BAGAR CLUB',
 			address: 'Krishna Complex, BL Chowk Rd',
 			area: 'Bagar',
 			state: 'Rajasthan, 333023',
 			phone: '+91 7877 393 777',
-			features: ['Junior Training Programs', 'Beginner Courses', 'Weekend Classes']
+			features: ['10m Air Rifle Range', 'Professional Training', 'Competition Practice',
+				'Junior Training Programs', 'Beginner Courses', 'Weekend Classes',
+				'Advanced Training', 'Elite Shooter Programs', 'Competition Preparation']
 		},
 		{
-			name: 'Pilani Center',
+			name: 'PILANI CLUB',
 			address: 'Smt. Indramani, Mandelia',
 			area: 'Sports Complex, Pilani',
 			state: 'Rajasthan, 333031',
-			phone: '+91 7877 393 777',
-			features: ['Advanced Training', 'Elite Shooter Programs', 'Competition Preparation']
+			phone: '+91 7877 393 777, +91 7477 220 328',
+			features: ['10m Air Rifle Range', 'Professional Training', 'Competition Practice',
+				'Junior Training Programs', 'Beginner Courses', 'Weekend Classes',
+				'Advanced Training', 'Elite Shooter Programs', 'Competition Preparation']
 		}
 	];
 
@@ -190,15 +192,7 @@
 	];
 </script>
 
-<!-- Admin Panel Link - Floating at top right -->
-<div class="fixed top-4 right-4 z-50">
-	<a href="/admin" class="bg-dark/80 hover:bg-dark text-white px-4 py-2 rounded-lg shadow-lg transition-colors duration-200 text-sm flex items-center gap-2" title="Admin Login">
-		<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-		</svg>
-		Admin
-	</a>
-</div>
+
 
 <!-- Hero Section -->
 <section class="relative bg-dark text-white min-h-[90vh] flex items-center overflow-hidden">
@@ -306,12 +300,124 @@
 	</div>
 </section>
 
+
+<!-- Association Section -->
+<section id="association" class="section bg-dark text-white">
+	<div class="container">
+		<div class="text-center mb-12">
+			<h2 class="text-3xl md:text-4xl font-bold mb-4">Our <span class="text-primary">Association</span></h2>
+			<p class="text-lg text-tertiary max-w-3xl mx-auto">Proudly affiliated with the premier shooting sports organization in Rajasthan.</p>
+		</div>
+		
+		<div class="grid md:grid-cols-2 gap-12 items-center">
+			<!-- Text Content -->
+			<div>
+				<!-- Main Association Info -->
+				<div class="mb-8">
+					<div class="flex items-center gap-3 mb-4">
+						<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+							<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+							</svg>
+						</div>
+						<div>
+							<h3 class="text-2xl font-bold text-white">Rajasthan Rifle Association</h3>
+
+						</div>
+					</div>
+					<p class="text-tertiary mb-6">Officially recognized by the state's premier shooting sports authority.</p>
+				</div>
+
+				<!-- Stats Grid -->
+				<div class="grid grid-cols-2 gap-4 mb-8">
+					<div class="bg-primary/10 p-4 rounded-lg text-center">
+						<div class="text-2xl font-bold text-primary mb-1">100%</div>
+						<div class="text-sm text-tertiary">Competition Eligible</div>
+					</div>
+					<div class="bg-primary/10 p-4 rounded-lg text-center">
+						<div class="text-2xl font-bold text-primary mb-1">State</div>
+						<div class="text-sm text-tertiary">Recognized Standards</div>
+					</div>
+				</div>
+				
+				<!-- Key Benefits -->
+				<div class="space-y-4 mb-8">
+					<div class="flex items-center gap-3 bg-accent/20 p-4 rounded-lg">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+						</svg>
+						<div>
+							<h4 class="font-semibold text-white">State & National Competitions</h4>
+							<p class="text-tertiary text-sm">Direct access to RRA & NRAI events</p>
+						</div>
+					</div>
+					
+					<div class="flex items-center gap-3 bg-accent/20 p-4 rounded-lg">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+						</svg>
+						<div>
+							<h4 class="font-semibold text-white">Certified Training Standards</h4>
+							<p class="text-tertiary text-sm">RRA-approved coaching methodology</p>
+						</div>
+					</div>
+					
+					<div class="flex items-center gap-3 bg-accent/20 p-4 rounded-lg">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+						</svg>
+						<div>
+							<h4 class="font-semibold text-white">Official Recognition</h4>
+							<p class="text-tertiary text-sm">Valid certificates & rankings</p>
+						</div>
+					</div>
+				</div>
+				
+				<div class="flex flex-wrap gap-4">
+					<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20about%20%20your%Shooting%20Range." target="_blank" rel="noopener noreferrer" class="btn-primary">
+						Learn More
+					</a>
+					<div class="flex items-center gap-2 text-tertiary">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+						</svg>
+						<span class="text-sm">Verified Member</span>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Certificate Image -->
+			<div class="relative">
+				<div class="relative bg-secondary/10 rounded-lg overflow-hidden shadow-2xl">
+					<!-- Certificate Image -->
+					<img 
+						src="/images/rra.png"
+						alt="Rajasthan Rifle Association Affiliation Certificate" 
+						class="w-full h-auto max-h-[600px] object-contain"
+					/>
+					
+					<!-- Certificate overlay for styling -->
+					<div class="absolute inset-0 bg-gradient-to-t from-dark/20 via-transparent to-transparent pointer-events-none"></div>
+				</div>
+				
+				<!-- Certificate badge -->
+				<div class="absolute top-4 left-4 bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+					<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+					</svg>
+					Certified
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 <!-- Locations/Centers Section -->
 <section id="locations" class="section bg-secondary">
 	<div class="container">
 		<div class="text-center mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold mb-4">Our <span class="text-primary">Locations</span></h2>
-			<p class="text-lg text-gray-600 max-w-3xl mx-auto">Visit one of our three training centers in Jhunjunu, Rajasthan.</p>
+			<p class="text-lg text-gray-600 max-w-3xl mx-auto">Visit one of our three training centers in Jhunjhunu, Rajasthan.</p>
 		</div>
 		
 		<div class="grid md:grid-cols-3 gap-8">
@@ -320,7 +426,7 @@
 					<!-- Center image -->
 					<div class="w-full h-48 bg-tertiary rounded-md mb-4 overflow-hidden">
 						{#if index === 0}
-							<img src="/images/centers/jhunjunu.jpg" alt="Jhunjunu Center" class="w-full h-full object-cover">
+							<img src="/images/centers/jhunjunu.jpg" alt="Jhunjhunu Center" class="w-full h-full object-cover">
 						{:else if index === 1}
 							<img src="/images/centers/bagar.jpg" alt="Bagar Center" class="w-full h-full object-cover">
 						{:else if index === 2}
@@ -391,30 +497,28 @@
 </section>
 
 <!-- Gallery Section -->
-<section id="gallery" class="section bg-tertiary">
+<section id="gallery" class="section bg-white">
 	<div class="container">
 		<div class="text-center mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold mb-4">Our <span class="text-primary">Gallery</span></h2>
 			<p class="text-lg text-gray-600 max-w-3xl mx-auto">Take a look at our training facilities and shooting ranges.</p>
 		</div>
 		
-		{#if carouselImages.length > 0}
 		<!-- Carousel Component -->
 		<div class="relative max-w-4xl mx-auto mb-16 overflow-hidden rounded-lg shadow-lg bg-white w-full">
 			<!-- Main carousel image -->
 			<div class="relative w-full h-[500px] overflow-hidden">
-				{#each carouselImages as image, index}
+				{#each galleryImages as image, index}
 					<!-- Only show current image -->
 					<div class="absolute inset-0 transition-opacity duration-500 ease-in-out"
 					style="opacity: {index === currentImageIndex ? '1' : '0'}">
-					<!-- Image display with support for both local and R2 images -->
-					<img 
-						src={image.src} 
-						alt={image.alt} 
-						class="w-full h-full object-cover"
-						on:error={() => handleImageError(image)}
-					/>
-						
+						<!-- Image display -->
+						<img
+							src={image.src}
+							alt={image.alt}
+							class="w-full h-full object-cover"
+						/>
+
 						<!-- Caption overlay -->
 						<div class="absolute bottom-0 left-0 right-0 bg-dark/70 text-white p-4">
 							<p class="text-lg font-semibold">{image.caption}</p>
@@ -422,9 +526,9 @@
 					</div>
 				{/each}
 			</div>
-			
+
 			<!-- Navigation buttons -->
-			<button 
+			<button
 				class="absolute left-2 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary text-white rounded-full p-2 focus:outline-none z-10"
 				on:click={prevImage}
 				aria-label="Previous image"
@@ -433,19 +537,19 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 				</svg>
 			</button>
-			
+
 			<!-- Indicators -->
 			<div class="absolute bottom-24 left-0 right-0 flex justify-center space-x-2 pb-4">
-				{#each carouselImages as _, index}
-					<button 
+				{#each galleryImages as _, index}
+					<button
 						class="w-3 h-3 rounded-full focus:outline-none transition-colors duration-200 ease-in-out {index === currentImageIndex ? 'bg-primary' : 'bg-white/50'}"
 						on:click={() => currentImageIndex = index}
 						aria-label="Go to slide {index + 1}"
 					></button>
 				{/each}
 			</div>
-			
-			<button 
+
+			<button
 				class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary text-white rounded-full p-2 focus:outline-none z-10"
 				on:click={nextImage}
 				aria-label="Next image"
@@ -454,9 +558,9 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 				</svg>
 			</button>
-			
+
 			<!-- Play/Pause Button -->
-			<button 
+			<button
 				class="absolute left-1/2 transform -translate-x-1/2 bottom-4 bg-primary/80 hover:bg-primary text-white rounded-full p-2 focus:outline-none z-10"
 				on:click={togglePlayPause}
 				aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
@@ -472,36 +576,23 @@
 				{/if}
 			</button>
 		</div>
-		
+
 		<!-- Thumbnail Grid -->
 		<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-			{#each carouselImages as image, index}
+			{#each galleryImages as image, index}
 				<button
 					class="overflow-hidden rounded-lg bg-white h-24 relative border-2 {index === currentImageIndex ? 'border-primary' : 'border-transparent'} transition-colors duration-200"
 					on:click={() => currentImageIndex = index}
 				>
-					<!-- Image thumbnail with fallback -->
-					<img 
-						src={image.src} 
-						alt={image.alt} 
+					<!-- Image thumbnail -->
+					<img
+						src={image.src}
+						alt={image.alt}
 						class="w-full h-full object-cover"
-						on:error={() => handleImageError(image)}
 					/>
 				</button>
 			{/each}
 		</div>
-		{:else}
-		<!-- Empty gallery state -->
-		<div class="bg-white p-8 rounded-lg text-center max-w-4xl mx-auto">
-			<div class="mb-4 text-primary/50">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-				</svg>
-			</div>
-			<h3 class="text-xl font-semibold mb-2">Gallery is Empty</h3>
-			<p class="text-gray-600">Please log into the admin panel to add images to the gallery.</p>
-		</div>
-		{/if}
 	</div>
 </section>
 
@@ -683,7 +774,7 @@
 							</svg>
 							<span class="flex-1 min-w-0">
 								4th Floor, Mukund Tower, Near Indian Bank<br>
-								Churu Road, Jhunjunu, Rajasthan, 333001
+								Churu Road, Jhunjhunu, Rajasthan, 333001
 							</span>
 						</p>
 						<p class="flex items-center gap-3">

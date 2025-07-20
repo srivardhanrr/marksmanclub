@@ -1,28 +1,20 @@
 <script lang="ts">
 	import '../app.css';
-	import { onMount } from 'svelte';
 	let { children } = $props();
 
-	// Initialize data on app startup
-	onMount(async () => {
-		try {
-			// Call the init API to ensure all data files exist
-			await fetch('/api/init');
-		} catch (error) {
-			console.error('Error initializing data:', error);
-		}
-	});
+
 
 	// Navigation links
 	const navLinks = [
 		{ text: 'Home', href: '/' },
 		{ text: 'About', href: '#about' },
 		{ text: 'Locations', href: '#locations' },
+		{ text: 'Association', href: '#association' },
 		{ text: 'Facilities', href: '#facilities' },
 		{ text: 'Gallery', href: '#gallery' },
 		{ text: 'Achievements', href: '#achievements' },
 		{ text: 'Contact', href: '#contact' }
-	];``
+	];
 
 	// Mobile menu state
 	let mobileMenuOpen = $state(false);
@@ -31,8 +23,8 @@
 	}
 </script>
 
-<header class="bg-dark text-white shadow-lg z-50 sticky top-0 w-full overflow-hidden">
-	<div class="bg-primary py-1 px-4">
+<header class="bg-white text-dark shadow-lg z-50 sticky top-0 w-full overflow-hidden">
+	<div class="bg-primary text-white py-1 px-4">
 		<div class="container mx-auto flex justify-between items-center text-sm">
 			<div class="flex items-center gap-6">
 				<div class="flex items-center gap-2">
@@ -47,7 +39,7 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
 					</svg>
-					<span>Jhunjunu, Rajasthan</span>
+					<span>Jhunjhunu, Rajasthan</span>
 				</div>
 			</div>
 			<div class="flex items-center gap-2">
@@ -62,36 +54,29 @@
 	<div class="container mx-auto py-4 px-4">
 		<nav class="flex items-center justify-between">
 			<!-- Logo -->
-			<a href="/" class="flex items-center gap-2">
-				<div class="relative w-12 h-12 rounded-full bg-primary flex items-center justify-center mr-2">
-					<span class="text-white font-bold text-xl">M</span>
-					<div class="absolute inset-0 rounded-full border-2 border-primary opacity-70"></div>
-				</div>
-				<div>
-					<span class="font-display text-xl md:text-2xl font-bold text-primary block leading-tight">THE MARKSMAN</span>
-					<span class="font-display text-sm text-tertiary block leading-tight">SHOOTING ACADEMY</span>
-				</div>
+			<a href="/" class="flex items-center">
+				<img src="/images/logo.png" alt="The Marksman Shooting Academy Logo" class="h-16 object-contain">
 			</a>
 
 			<!-- Desktop Navigation -->
 			<ul class="hidden lg:flex items-center gap-8">
 				{#each navLinks as link}
 					<li>
-						<a href={link.href} class="font-medium text-tertiary hover:text-primary transition-colors">
+						<a href={link.href} class="font-medium text-black hover:text-primary transition-colors">
 							{link.text}
 						</a>
 					</li>
 				{/each}
 				<li>
 					<a href="https://wa.me/917877393777?text=Hi,%20I'd%20like%20to%20know%20more." target="_blank" rel="noopener noreferrer" class="btn-primary">
-						Book Now
+						Apply Now
 					</a>
 				</li>
 			</ul>
 
 			<!-- Mobile Menu Button -->
 			<button 
-				class="lg:hidden text-tertiary hover:text-primary p-2 transition-colors" 
+				class="lg:hidden text-black hover:text-primary p-2 transition-colors" 
 				aria-label="Toggle menu"
 				on:click={toggleMobileMenu}
 			>
@@ -107,13 +92,13 @@
 
 		<!-- Mobile Menu -->
 		{#if mobileMenuOpen}
-			<div class="lg:hidden mt-4 pb-4 border-t border-gray-700 pt-4">
+			<div class="lg:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
 				<ul class="flex flex-col gap-4">
 					{#each navLinks as link}
 						<li>
 							<a 
 								href={link.href} 
-								class="block font-medium text-tertiary hover:text-primary transition-colors"
+								class="block font-medium text-black hover:text-primary transition-colors"
 								on:click={toggleMobileMenu}
 							>
 								{link.text}
@@ -181,7 +166,7 @@
 						</svg>
 						<span>
 							4th Floor, Mukund Tower, Near Indian Bank<br>
-							Churu Road, Jhunjunu, Rajasthan, 333001
+							Churu Road, Jhunjhunu, Rajasthan, 333001
 						</span>
 					</p>
 					<p class="flex items-center gap-2">
